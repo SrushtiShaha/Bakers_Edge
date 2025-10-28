@@ -1,0 +1,16 @@
+.expiry-alert {
+  font-weight: bold;
+  animation: blink 1s infinite;
+  color: orange;
+}
+
+@keyframes blink {
+  25%, 25%, 100% { opacity: 1; }
+  45%, 55% { opacity: 0; }
+}
+
+.expiry-alert-today {
+  font-weight: bold;
+  animation: blink 1s infinite;
+  color: orange;
+}

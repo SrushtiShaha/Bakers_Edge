@@ -1,0 +1,232 @@
+/* Full page center alignment */
+
+/* Make login container center everything vertically and horizontally */
+.login-container {
+  /* display: flex; */
+  /* justify-content: center; */
+  /* align-items: center; */
+  /* min-height: calc(100vh - 56px);  */
+  /* background: #f8f9fa; */
+}
+
+/* Center and style the card */
+.login-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center; /* center all text inside */
+}
+
+/* Input fields with icons */
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center input + icon */
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: #fefefe;
+}
+
+.input-with-icon i {
+  margin-right: 8px;
+  font-size: 1.2rem;
+  color: #ff7f50;
+}
+
+.input-with-icon input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+  text-align: center; /* centers text inside input */
+}
+
+/* Make radio button section centered */
+.role-selection {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+.role-selection input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  transform: scale(1.3);
+  accent-color: #ff7f50;
+}
+
+/* Button styling */
+.login-btn {
+  background: #ff7f50;
+  color: #fff;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-btn:hover {
+  background: #ff6333;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(50vh - 56px); 
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  padding: 20px; 
+}
+
+/* Card style */
+.login-card {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Title */
+.login-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+/* Input styles */
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  outline: none;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #ff7f50;
+  box-shadow: 0 0 8px rgba(255, 127, 80, 0.5);
+}
+
+/* Button */
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(45deg, #ff7f50, #ff6347);
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 99, 71, 0.4);
+}
+
+/* Register link */
+.register-link {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.95rem;
+}
+
+.register-link span {
+  color: blue;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.register-link span:hover {
+  text-decoration: underline;
+}
+
+/* Slide-up animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Role selection styling */
+.role-selection {
+  display: flex;
+  justify-content: center;
+  gap: 30px; /* more spacing */
+  margin-bottom: 20px;
+  font-size: 1.2rem; /* bigger text */
+}
+
+.role-selection label {
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Bigger radio buttons */
+.role-selection input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  transform: scale(1.3);
+  accent-color: #ff7f50; /* bakery theme */
+}
+
+/* Input with icon container */
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  padding: 0 10px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-with-icon i {
+  color: #ff7f50;
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+.input-with-icon input {
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 12px 0;
+  font-size: 1rem;
+  background: transparent;
+}
+
+.input-with-icon:focus-within {
+  border-color: #ff7f50;
+  box-shadow: 0 0 8px rgba(255, 127, 80, 0.5);
+}

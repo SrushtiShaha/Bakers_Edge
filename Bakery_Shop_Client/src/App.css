@@ -1,0 +1,61 @@
+
+.bakery-dashboard {
+    background-image: url('https://wallpapersok.com/images/high/aesthetic-pink-bakery-stand-f2pj7oycqjf4lbbr.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  
+  .bakery-overlay {
+    background-color: rgba(255, 255, 255, 0.85); /* Soft white overlay */
+    border-radius: 15px;
+    padding: 2rem;
+  }
+  
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Black navbar */
+.custom-navbar {
+  background-color: #000000 !important; /* pure black */
+}
+
+/* Navbar links */
+.navbar-nav .nav-link {
+  position: relative;
+  color: #f8f9fa !important; /* light text */
+  margin: 0 12px;
+  font-weight: 500;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Hover underline */
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: #ffdd57; /* golden underline */
+  transition: width 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 100%;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ffdd57 !important; /* golden hover */
+}
+
+/* Active page */
+.navbar-nav .nav-link.active {
+  color: #ffdd57 !important;
+  font-weight: 600;
+}
