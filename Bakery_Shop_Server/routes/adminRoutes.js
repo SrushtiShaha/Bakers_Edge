@@ -79,7 +79,7 @@ router.get("/vendor/me", vendorAuth, adminController.getVendorMe);
 
 router.patch("/vendor/me",vendorAuth, adminController.updateVendorMe);
 
-router.put("/vendor/me/password", vendorAuth, adminController.updateMyPassword);
+router.put("/vendor/password", vendorAuth, adminController.updateMyPassword);
 
 
 module.exports = router;
