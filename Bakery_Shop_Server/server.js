@@ -304,73 +304,56 @@
 // // --- PROBLEM CODE REMOVED ---
 // // The router.put(...) block that was here has been deleted.
 
-require('dotenv').config(); // This MUST be the first line
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
+const adminRoutes = require("./routes/adminRoutes");
+const vendorRoutes = require("./routes/vendorRoutes");
 
-// --- Import all your route files ---
-const vendorRoutes = require('./routes/vendorRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const productRoutes = require('./routes/productRoutes');
-const salesRoutes = require('./routes/salesRoutes');
-const expiredProductRoutes = require('./routes/expiredProductRoutes');
-const reportRoutes = require('./routes/reportRoutes');
-const customerRoutes = require('./routes/customerRoutes');
-const ledgerRoutes = require('./routes/ledgerRoutes');
-
+dotenv.config();
 const app = express();
 
-// --- Middleware Setup ---
-// 1. Configure CORS
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://bakery-shop-client.vercel.app'],
-  credentials: true
-}));
+// ✅ Allow multiple frontend origins (Vercel + Localhost)
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",                     // local frontend
+      "https://bakers-edge.vercel.app",            // live Vercel frontend
+      "https://bakers-edge-git-main-srushtishaha.vercel.app" // preview build
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
-// 2. Configure Body Parsers
-//    FIX: The duplicate app.use(express.json()) line has been removed.
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json());
+app.use(cookieParser());
 
+// ✅ Database Connection
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ MongoDB connected successfully"))
+  .catch((err) => console.log("❌ MongoDB connection error:", err));
 
-// --- MongoDB Connection ---
-const MONGO_URI = process.env.MONGO_URI; 
-if (!MONGO_URI) {
-  console.error('.env file is missing or MONGO_URI not defined');
-  process.exit(1);
-}
-
-//    FIX: Removed 'useNewUrlParser' and 'useUnifiedTopology'
-mongoose.connect(MONGO_URI) 
-.then(() => console.log("MongoDB connected"))
-.catch(err => console.error("MongoDB connection error:", err));
-
-
-// --- API Routes ---
-app.use('/api/customers', customerRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/sales', salesRoutes);
-app.use('/api/ledger', ledgerRoutes);
-app.use('/api/reports', reportRoutes);
-app.use('/api/expired-products', expiredProductRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/vendor', vendorRoutes);
-
-
-// --- Test Route ---
-app.get('/', (req, res) => {
-  res.send('Bakery Server is running ✅');
+// ✅ Test route to confirm server is working
+app.get("/", (req, res) => {
+  res.send("Bakers Edge backend is running successfully 🚀");
 });
 
-
-// --- 404 Handler ---
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+// ✅ Debug route to check frontend origin (optional)
+app.get("/check-origin", (req, res) => {
+  res.json({ origin: req.headers.origin });
 });
 
+// ✅ Routes
+app.use("/api/admin", adminRoutes);
+app.use("/api/vendor", vendorRoutes);
 
-// --- Start Server ---
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-
+// ✅ Start Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
