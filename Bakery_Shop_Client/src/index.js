@@ -321,6 +321,9 @@ import ViewVendors from "./components/ViewVendors";
 import LoginPage from "./components/LoginPage";
 import RegisterPage from "./components/VendorRequestForm"; 
 import VendorSetting from "./components/VendorSettings";
+import AdminHome from "./components/AdminHome";
+import AddVendor from "./components/AddVendor";
+
 
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
@@ -365,6 +368,12 @@ const router = createBrowserRouter([
         <AdminDashboard />
       </AdminProtected>
     ),
+    children: [
+    { index: true, element: <AdminHome /> }, // default home
+    { path: "add-vendor", element: <AddVendor /> },
+    { path: "view-vendors", element: <ViewVendors /> },
+    { path: "pending-approvals", element: <PendingApprovals /> },
+  ],
   },
 
   // Vendor dashboard (protected)
