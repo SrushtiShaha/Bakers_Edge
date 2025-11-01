@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ledgerSchema = new Schema({
-  // ✅ ADD THIS VENDOR LINK:
   vendorId: {
     type: Schema.Types.ObjectId,
     ref: 'Vendor',
@@ -19,9 +18,15 @@ const ledgerSchema = new Schema({
     ref: 'Customer',
     required: true,
   },
+  // ✅ New field: Always an array
+  products: {
+    type: [String], // simple string list, or use [Object] if you store objects
+    default: [],
+  },
   total: {
     type: Number,
     required: true,
+    default: 0,
   },
   status: {
     type: String,
