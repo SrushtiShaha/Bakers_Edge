@@ -229,14 +229,88 @@
 // //   }
 // // });
 
-require('dotenv').config(); // This MUST be the first line
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+// require('dotenv').config(); // This MUST be the first line
+// const express = require('express');
+// const mongoose = require('mongoose');
+// const cors = require('cors');
 
-// --- Import all your route files ---
-const vendorRoutes = require('./routes/vendorRoutes');
-const adminRoutes = require('./routes/adminRoutes');
+// // --- Import all your route files ---
+// const vendorRoutes = require('./routes/vendorRoutes');
+// const adminRoutes = require('./routes/adminRoutes');
+// const productRoutes = require('./routes/productRoutes');
+// const salesRoutes = require('./routes/salesRoutes');
+// const expiredProductRoutes = require('./routes/expiredProductRoutes');
+// const reportRoutes = require('./routes/reportRoutes');
+// const customerRoutes = require('./routes/customerRoutes');
+// const ledgerRoutes = require('./routes/ledgerRoutes');
+
+// const app = express();
+
+// // --- Middleware Setup ---
+// // 1. Configure CORS
+// app.use(cors({
+//   origin: ['http://localhost:3000', 'https://bakery-shop-client.vercel.app'],
+//   credentials: true
+// }));
+
+
+// // 2. Configure Body Parsers (This fixes the 'req.body' is empty problem)
+// // Increased limit for large payloads (like base64 QR code images)
+// app.use(express.json({ limit: '10mb' }));
+// app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
+// // --- MongoDB Connection ---
+// const MONGO_URI = process.env.MONGO_URI; 
+// if (!MONGO_URI) {
+//   console.error('.env file is missing or MONGO_URI not defined');
+//   process.exit(1);
+// }
+
+// // REMOVED 'useNewUrlParser' and 'useUnifiedTopology'
+// mongoose.connect(MONGO_URI) 
+// .then(() => console.log("MongoDB connected"))
+// .catch(err => console.error("MongoDB connection error:", err));
+
+
+// // --- API Routes ---
+// // (These MUST come AFTER the middleware setup)
+// app.use('/api/customers', customerRoutes);
+// app.use('/api/products', productRoutes);
+// app.use('/api/sales', salesRoutes);
+// app.use('/api/ledger', ledgerRoutes);
+// app.use('/api/reports', reportRoutes);
+// app.use('/api/expired-products', expiredProductRoutes);
+// app.use('/api/admin', adminRoutes);
+// app.use('/api/vendor', vendorRoutes);
+
+
+// // --- Test Route ---
+// app.get('/', (req, res) => {
+//   res.send('Bakery Server is running ✅');
+// });
+
+
+// // --- 404 Handler ---
+// // (This should be after all other routes)
+// app.use((req, res) => {
+//   res.status(404).json({ message: 'Route not found' });
+// });
+
+
+// // --- Start Server ---
+// const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+// --- PROBLEM CODE REMOVED ---
+// The router.put(...) block that was here has been deleted.
+
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
+const adminRoutes = require("./routes/adminRoutes");
+const vendorRoutes = require("./routes/vendorRoutes");
 const productRoutes = require('./routes/productRoutes');
 const salesRoutes = require('./routes/salesRoutes');
 const expiredProductRoutes = require('./routes/expiredProductRoutes');
@@ -244,116 +318,57 @@ const reportRoutes = require('./routes/reportRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const ledgerRoutes = require('./routes/ledgerRoutes');
 
+dotenv.config();
 const app = express();
 
-// --- Middleware Setup ---
-// 1. Configure CORS
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://bakery-shop-client.vercel.app'],
-  credentials: true
-}));
+// ✅ Allow multiple frontend origins (Vercel + Localhost)
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",                     // local frontend
+      "https://bakers-edge.vercel.app",            // live Vercel frontend
+      "https://bakers-edge-git-main-srushtishaha.vercel.app" // preview build
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
+app.use(express.json());
+app.use(cookieParser());
 
-// 2. Configure Body Parsers (This fixes the 'req.body' is empty problem)
-// Increased limit for large payloads (like base64 QR code images)
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+// ✅ Database Connection
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ MongoDB connected successfully"))
+  .catch((err) => console.log("❌ MongoDB connection error:", err));
 
-// --- MongoDB Connection ---
-const MONGO_URI = process.env.MONGO_URI; 
-if (!MONGO_URI) {
-  console.error('.env file is missing or MONGO_URI not defined');
-  process.exit(1);
-}
+// ✅ Test route to confirm server is working
+app.get("/", (req, res) => {
+  res.send("Bakers Edge backend is running successfully 🚀");
+});
 
-// REMOVED 'useNewUrlParser' and 'useUnifiedTopology'
-mongoose.connect(MONGO_URI) 
-.then(() => console.log("MongoDB connected"))
-.catch(err => console.error("MongoDB connection error:", err));
+// ✅ Debug route to check frontend origin (optional)
+app.get("/check-origin", (req, res) => {
+  res.json({ origin: req.headers.origin });
+});
 
-
-// --- API Routes ---
-// (These MUST come AFTER the middleware setup)
+// ✅ Routes
+app.use("/api/admin", adminRoutes);
+app.use("/api/vendor", vendorRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/ledger', ledgerRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/expired-products', expiredProductRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/vendor', vendorRoutes);
 
 
-// --- Test Route ---
-app.get('/', (req, res) => {
-  res.send('Bakery Server is running ✅');
-});
 
 
-// --- 404 Handler ---
-// (This should be after all other routes)
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
-});
-
-
-// --- Start Server ---
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-
-// --- PROBLEM CODE REMOVED ---
-// The router.put(...) block that was here has been deleted.
-
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const cors = require("cors");
-// const dotenv = require("dotenv");
-// const cookieParser = require("cookie-parser");
-// const adminRoutes = require("./routes/adminRoutes");
-// const vendorRoutes = require("./routes/vendorRoutes");
-
-// dotenv.config();
-// const app = express();
-
-// // ✅ Allow multiple frontend origins (Vercel + Localhost)
-// app.use(
-//   cors({
-//     origin: [
-//       "http://localhost:3000",                     // local frontend
-//       "https://bakers-edge.vercel.app",            // live Vercel frontend
-//       "https://bakers-edge-git-main-srushtishaha.vercel.app" // preview build
-//     ],
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     credentials: true,
-//   })
-// );
-
-// app.use(express.json());
-// app.use(cookieParser());
-
-// // ✅ Database Connection
-// mongoose
-//   .connect(process.env.MONGO_URI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => console.log("✅ MongoDB connected successfully"))
-//   .catch((err) => console.log("❌ MongoDB connection error:", err));
-
-// // ✅ Test route to confirm server is working
-// app.get("/", (req, res) => {
-//   res.send("Bakers Edge backend is running successfully 🚀");
-// });
-
-// // ✅ Debug route to check frontend origin (optional)
-// app.get("/check-origin", (req, res) => {
-//   res.json({ origin: req.headers.origin });
-// });
-
-// // ✅ Routes
-// app.use("/api/admin", adminRoutes);
-// app.use("/api/vendor", vendorRoutes);
-
-// // ✅ Start Server
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// ✅ Start Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
