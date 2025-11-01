@@ -928,27 +928,42 @@ exports.getPendingVendors = async (req, res) => {
   }
 };
 
-// ---------------- Approve vendor request (Safe with Twilio handling) ----------------
+// ---------------- Approve vendor request (with debug logs) ----------------
 exports.approveVendorRequest = async (req, res) => {
   try {
+    // ✅ STEP 1: Log everything coming in
+    console.log("\n--- [APPROVE VENDOR DEBUG] ---");
+    console.log("Request Params ID:", req.params.id);
+    console.log("Request Body:", req.body);
+    console.log("------------------------------\n");
+
     const { password } = req.body;
     const requestId = req.params.id;
 
+    // ✅ STEP 2: Validate input
+    if (!password) {
+      console.log("[DEBUG] ❌ Password missing in request body");
+      return res.status(400).json({ message: "Password is required" });
+    }
+
     const request = await VendorRequest.findById(requestId);
     if (!request) {
-      console.log(`[APPROVE] Vendor request not found for ID: ${requestId}`);
+      console.log(`[DEBUG] ❌ Vendor request not found for ID: ${requestId}`);
       return res.status(404).json({ message: "Request not found" });
     }
 
+    // ✅ STEP 3: Check duplicates
     const existingVendor = await Vendor.findOne({
-      $or: [{ email: request.email }, { adharNo: request.adharNo }]
+      $or: [{ email: request.email }, { adharNo: request.adharNo }],
     });
 
     if (existingVendor) {
-      console.log(`[APPROVE] Duplicate vendor found for ${request.email || request.phone}`);
+      console.log(`[DEBUG] ❌ Duplicate vendor found for ${request.email || request.phone}`);
       return res.status(400).json({ message: "Vendor with email or Aadhar already exists." });
     }
 
+    // ✅ STEP 4: Hash password
+    console.log("[DEBUG] Hashing password...");
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newVendor = new Vendor({
@@ -965,14 +980,9 @@ exports.approveVendorRequest = async (req, res) => {
     await newVendor.save();
     await VendorRequest.findByIdAndDelete(requestId);
 
-    // ✅ Debug log: confirm environment variables exist on Render
-    console.log({
-      TWILIO_SID: process.env.TWILIO_ACCOUNT_SID ? "✅ loaded" : "❌ missing",
-      TWILIO_TOKEN: process.env.TWILIO_AUTH_TOKEN ? "✅ loaded" : "❌ missing",
-      TWILIO_FROM: process.env.TWILIO_PHONE_NUMBER ? "✅ loaded" : "❌ missing",
-    });
+    console.log("[DEBUG] ✅ Vendor approved successfully, sending notifications...");
 
-    // ✅ Safe Twilio + Email sending (won’t crash server)
+    // ✅ Safe Twilio + Email (non-blocking)
     try {
       await sendSms(
         request.phone,
@@ -994,16 +1004,17 @@ exports.approveVendorRequest = async (req, res) => {
       console.error(`❌ Email sending failed: ${mailErr.message}`);
     }
 
-    // ✅ Final response always sent (no more 404)
+    // ✅ STEP 5: Final response
     return res.json({
       message: "Vendor approved and notified successfully",
       vendor: newVendor,
     });
   } catch (err) {
-    console.error("❌ Error approving vendor:", err);
+    console.error("❌ [DEBUG] Server error during approval:", err);
     return res.status(500).json({ message: "Server error during vendor approval" });
   }
 };
+
 
 // ---------------- Delete/Reject vendor request ----------------
 exports.deleteVendorRequest = async (req, res) => {
