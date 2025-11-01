@@ -1,43 +1,51 @@
-// controllers/ledgerController.js
 const Ledger = require('../models/Ledger');
 
-// GET /api/ledger
+// ✅ GET /api/ledger
 exports.getLedgers = async (req, res) => {
   try {
-    const ledgers = await Ledger.find({ 
+    const ledgers = await Ledger.find({
       vendorId: req.vendorId, // Filter by vendor
-      total: { $gt: 0 }, 
+      total: { $gt: 0 },
       status: { $ne: 'paid' }
     })
       .populate('customer', 'name contact address')
       .populate('sale', 'invoiceNo')
       .sort({ createdAt: -1 });
 
-    res.json(ledgers);
+    // ✅ Sanitize output so frontend never gets null/undefined for products
+    const safeLedgers = ledgers.map(l => ({
+      ...l._doc,
+      products: Array.isArray(l.products) ? l.products : [],
+    }));
+
+    res.status(200).json(safeLedgers);
   } catch (error) {
     console.error('Ledger fetch error:', error);
     res.status(500).json({ message: 'Server error fetching ledgers' });
   }
 };
 
-// POST /api/ledger
+// ✅ POST /api/ledger
 exports.createLedger = async (req, res) => {
-  const { customer, products, total, sale } = req.body; 
+  const { customer, products = [], total, sale } = req.body;
 
   try {
     if (!customer || !total) {
-      return res.status(400).json({ message: 'Missing required fields: customer or total' });
+      return res.status(400).json({
+        message: 'Missing required fields: customer or total',
+      });
     }
 
-    const newLedger = new Ledger({ 
-      customer, 
-      products, 
-      total, 
-      sale, 
-      vendorId: req.vendorId // Tag with vendorId
+    // ✅ Always ensure products is an array
+    const newLedger = new Ledger({
+      customer,
+      products: Array.isArray(products) ? products : [],
+      total,
+      sale,
+      vendorId: req.vendorId,
     });
-    const saved = await newLedger.save();
 
+    const saved = await newLedger.save();
     res.status(201).json(saved);
   } catch (error) {
     console.error('Ledger create error:', error);
@@ -45,61 +53,76 @@ exports.createLedger = async (req, res) => {
   }
 };
 
-// PATCH /api/ledger/:id/pay
+// ✅ PATCH /api/ledger/:id/pay
 exports.markAsPaid = async (req, res) => {
   try {
     const updatedLedger = await Ledger.findOneAndUpdate(
-      { _id: req.params.id, vendorId: req.vendorId }, // Check vendor
+      { _id: req.params.id, vendorId: req.vendorId },
       { status: 'paid', total: 0 },
       { new: true }
     );
 
     if (!updatedLedger) {
-      return res.status(404).json({ message: 'Ledger not found or unauthorized' });
+      return res
+        .status(404)
+        .json({ message: 'Ledger not found or unauthorized' });
     }
 
     res.json({ message: 'Ledger marked as paid', ledger: updatedLedger });
-
   } catch (error) {
     console.error('Ledger pay error:', error);
     res.status(500).json({ message: 'Server error updating ledger' });
   }
 };
 
-// PATCH /api/ledger/:id/partial-pay
+// ✅ PATCH /api/ledger/:id/partial-pay
 exports.partialPay = async (req, res) => {
   try {
     const ledgerId = req.params.id;
     const { amount } = req.body;
 
     if (!amount || isNaN(amount) || amount <= 0) {
-      return res.status(400).json({ success: false, message: 'Invalid amount' });
+      return res
+        .status(400)
+        .json({ success: false, message: 'Invalid amount' });
     }
 
-    const ledger = await Ledger.findOne({ _id: ledgerId, vendorId: req.vendorId });
+    const ledger = await Ledger.findOne({
+      _id: ledgerId,
+      vendorId: req.vendorId,
+    });
+
     if (!ledger) {
-      return res.status(404).json({ success: false, message: 'Ledger not found or unauthorized' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Ledger not found or unauthorized' });
     }
 
     const newTotal = ledger.total - amount;
     if (newTotal < 0) {
-      return res.status(400).json({ success: false, message: 'Amount exceeds total' });
+      return res
+        .status(400)
+        .json({ success: false, message: 'Amount exceeds total' });
     }
 
     ledger.total = newTotal;
-    if (newTotal === 0) {
-      ledger.status = 'paid';
-    }
+    if (newTotal === 0) ledger.status = 'paid';
 
     const updatedLedger = await ledger.save();
     res.json({
       success: true,
       message: 'Partial payment updated',
-      ledger: updatedLedger
+      ledger: {
+        ...updatedLedger._doc,
+        products: Array.isArray(updatedLedger.products)
+          ? updatedLedger.products
+          : [],
+      },
     });
-
   } catch (error) {
     console.error('Partial payment error:', error);
-    res.status(500).json({ success: false, message: 'Server error processing partial payment' });
+    res
+      .status(500)
+      .json({ success: false, message: 'Server error processing partial payment' });
   }
 };
