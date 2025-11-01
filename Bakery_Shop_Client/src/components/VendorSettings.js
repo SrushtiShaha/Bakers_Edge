@@ -1002,53 +1002,7 @@ const VendorSettings = () => {
     }
   };
 
-  // ✅ Change password (fixed endpoint)
-  const handlePasswordSave = async () => {
-    const { currentPassword, newPassword, confirmPassword } = passwordData;
-
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      toast.error("Please fill in all password fields");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      toast.error("New passwords do not match");
-      return;
-    }
-
-    if (newPassword.trim().length < 8) {
-      toast.error("New password must be at least 8 characters");
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem("vendorToken");
-
-      console.log("Sending password data:", { currentPassword, newPassword });
-
-      // ✅ FIXED ENDPOINT
-      const response = await axios.put(
-        `${apiUrl}/api/admin/vendor/password`,
-        { currentPassword, newPassword },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      toast.success(response.data.message || "Password updated successfully!");
-      setPasswordData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-    } catch (err) {
-      console.error("❌ Password Update Error:", err);
-      const message = err.response?.data?.message || "Error updating password";
-      toast.error(message);
-    }
-  };
+ 
 
   // ✅ Loading spinner
   if (loading) {
@@ -1147,68 +1101,8 @@ const VendorSettings = () => {
         </Form>
       </Card>
 
-      // {/* Password Change Card */}
-      // <Card
-      //   className="shadow-lg mx-auto p-4 mt-4"
-      //   style={{
-      //     maxWidth: "600px",
-      //     borderRadius: "15px",
-      //     background: "#ffffff",
-      //   }}
-      // >
-      //   <h4 className="text-center mb-4" style={{ color: "#004085" }}>
-      //     🔑 Change Password
-      //   </h4>
-
-      //   <Form>
-      //     <Form.Group className="mb-3">
-      //       <Form.Label>Current Password</Form.Label>
-      //       <Form.Control
-      //         type="password"
-      //         name="currentPassword"
-      //         value={passwordData.currentPassword}
-      //         onChange={handlePasswordChange}
-      //         placeholder="Enter your current password"
-      //       />
-      //     </Form.Group>
-
-      //     <Form.Group className="mb-3">
-      //       <Form.Label>New Password</Form.Label>
-      //       <Form.Control
-      //         type="password"
-      //         name="newPassword"
-      //         value={passwordData.newPassword}
-      //         onChange={handlePasswordChange}
-      //         placeholder="Enter new password (min. 8 characters)"
-      //       />
-      //     </Form.Group>
-
-      //     <Form.Group className="mb-3">
-      //       <Form.Label>Confirm New Password</Form.Label>
-      //       <Form.Control
-      //         type="password"
-      //         name="confirmPassword"
-      //         value={passwordData.confirmPassword}
-      //         onChange={handlePasswordChange}
-      //         placeholder="Confirm your new password"
-      //       />
-      //     </Form.Group>
-
-      //     <div className="text-center mt-4">
-      //       <Button
-      //         variant="primary"
-      //         onClick={handlePasswordSave}
-      //         style={{
-      //           padding: "10px 20px",
-      //           borderRadius: "10px",
-      //           fontWeight: "bold",
-      //         }}
-      //       >
-      //         🔒 Update Password
-      //       </Button>
-      //     </div>
-      //   </Form>
-      // </Card>
+      {/* Password Change Card */}
+      
     </Container>
   );
 };
