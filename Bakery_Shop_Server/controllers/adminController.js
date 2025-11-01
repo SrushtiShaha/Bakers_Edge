@@ -828,6 +828,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const sendSms = require("../utils/sendSms");
 const sendEmail = require("../utils/sendEmail");
+const ExcelJS = require('exceljs');
+const PDFDocument = require('pdfkit');
 
 // ... (all other functions remain the same) ...
 
@@ -1168,3 +1170,58 @@ exports.updateMyPassword = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+const Vendor = require('../models/Vendor');
+const ExcelJS = require('exceljs');
+const PDFDocument = require('pdfkit');
+
+exports.exportVendorsToExcel = async (req, res) => {
+  try {
+    const vendors = await Vendor.find({ status: 'Approved' });
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Vendors');
+    worksheet.columns = [
+      { header: 'Name', key: 'name', width: 20 },
+      { header: 'Email', key: 'email', width: 25 },
+      { header: 'Phone', key: 'phone', width: 15 },
+      { header: 'Shop Name', key: 'shopName', width: 20 },
+      { header: 'Address', key: 'shopAddress', width: 30 },
+      { header: 'Aadhar', key: 'adharNo', width: 20 },
+    ];
+
+    vendors.forEach((v) => worksheet.addRow(v));
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+    res.setHeader('Content-Disposition', 'attachment; filename=vendors.xlsx');
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error('Excel export error:', err);
+    res.status(500).json({ message: 'Failed to export vendors to Excel' });
+  }
+};
+
+exports.exportVendorsToPDF = async (req, res) => {
+  try {
+    const vendors = await Vendor.find({ status: 'Approved' });
+    const doc = new PDFDocument();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=vendors.pdf');
+    doc.pipe(res);
+    doc.fontSize(16).text('Approved Vendors', { align: 'center' });
+    doc.moveDown();
+    vendors.forEach((v, i) => {
+      doc.fontSize(12).text(`${i + 1}. ${v.name} - ${v.email} - ${v.shopName}`);
+      doc.moveDown(0.3);
+    });
+    doc.end();
+  } catch (err) {
+    console.error('PDF export error:', err);
+    res.status(500).json({ message: 'Failed to export vendors to PDF' });
+  }
+};
+
