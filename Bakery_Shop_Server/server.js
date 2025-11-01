@@ -1,136 +1,233 @@
-// // // const express = require('express');
-// // // const mongoose = require('mongoose');
-// // // const dotenv = require('dotenv');
-// // // const cors = require('cors');
-// // // const vendorRoutes = require('./routes/vendorRoutes');
-// // // const adminRoutes = require('./routes/adminRoutes');
+// // // // const express = require('express');
+// // // // const mongoose = require('mongoose');
+// // // // const dotenv = require('dotenv');
+// // // // const cors = require('cors');
+// // // // const vendorRoutes = require('./routes/vendorRoutes');
+// // // // const adminRoutes = require('./routes/adminRoutes');
 
-// // // dotenv.config(); 
-// // // const app = express();
+// // // // dotenv.config(); 
+// // // // const app = express();
 
-// // // // ✅ Only one CORS import + use
-// // // app.use(cors({
-// // //   origin: ['http://localhost:3000', 'https://bakery-shop-client.vercel.app'],
-// // //   credentials: true
-// // // }));
+// // // // // ✅ Only one CORS import + use
+// // // // app.use(cors({
+// // // //   origin: ['http://localhost:3000', 'https://bakery-shop-client.vercel.app'],
+// // // //   credentials: true
+// // // // }));
 
-// // // app.use(express.json());
+// // // // app.use(express.json());
 
-// // // // MongoDB Connection
-// // // const MONGO_URI = process.env.MONGO_URI;
-// // // if (!MONGO_URI) {
-// // //   console.error('.env file is missing or MONGO_URI not defined');
-// // //   process.exit(1);
-// // // }
+// // // // // MongoDB Connection
+// // // // const MONGO_URI = process.env.MONGO_URI;
+// // // // if (!MONGO_URI) {
+// // // //   console.error('.env file is missing or MONGO_URI not defined');
+// // // //   process.exit(1);
+// // // // }
 
-// // // // mongoose.connect(MONGO_URI, {
-// // // //   dbName: "bakery_shop_db"
+// // // // // mongoose.connect(MONGO_URI, {
+// // // // //   dbName: "bakery_shop_db"
+// // // // // })
+// // // // mongoose.connect(process.env.MONGO_URI, {
+// // // //   useNewUrlParser: true,
+// // // //   useUnifiedTopology: true
 // // // // })
-// // // mongoose.connect(process.env.MONGO_URI, {
-// // //   useNewUrlParser: true,
-// // //   useUnifiedTopology: true
-// // // })
-// // // .then(() => console.log("MongoDB connected"))
-// // // .catch(err => console.error("MongoDB connection error:", err));
+// // // // .then(() => console.log("MongoDB connected"))
+// // // // .catch(err => console.error("MongoDB connection error:", err));
 
-// // // // Test route
-// // // app.get('/', (req, res) => {
-// // //   res.send('Bakery Server is running ✅');
-// // // });
+// // // // // Test route
+// // // // app.get('/', (req, res) => {
+// // // //   res.send('Bakery Server is running ✅');
+// // // // });
 
-// // // // API Routes
-// // // app.use('/api/customers', require('./routes/customerRoutes'));
-// // // app.use('/api/products', require('./routes/productRoutes'));
-// // // app.use('/api/sales', require('./routes/salesRoutes'));
-// // // app.use('/api/ledger', require('./routes/ledgerRoutes'));
-// // // app.use('/api/reports', require('./routes/reportRoutes'));
-// // // app.use('/api/admin', adminRoutes);
-// // // app.use('/api/vendor', vendorRoutes);
+// // // // // API Routes
+// // // // app.use('/api/customers', require('./routes/customerRoutes'));
+// // // // app.use('/api/products', require('./routes/productRoutes'));
+// // // // app.use('/api/sales', require('./routes/salesRoutes'));
+// // // // app.use('/api/ledger', require('./routes/ledgerRoutes'));
+// // // // app.use('/api/reports', require('./routes/reportRoutes'));
+// // // // app.use('/api/admin', adminRoutes);
+// // // // app.use('/api/vendor', vendorRoutes);
 
-// // // // 404 Handler
-// // // app.use((req, res) => {
-// // //   res.status(404).json({ message: 'Route not found' });
-// // // });
+// // // // // 404 Handler
+// // // // app.use((req, res) => {
+// // // //   res.status(404).json({ message: 'Route not found' });
+// // // // });
 
-// // // // ✅ Only one app.listen
-// // // const PORT = process.env.PORT || 10000;
-// // // app.listen(PORT, () => {
-// // //   console.log(`🚀 Server running on http://localhost:${PORT}`);
-// // // });
+// // // // // ✅ Only one app.listen
+// // // // const PORT = process.env.PORT || 10000;
+// // // // app.listen(PORT, () => {
+// // // //   console.log(`🚀 Server running on http://localhost:${PORT}`);
+// // // // });
 
-// // // require('dotenv').config(); // MUST be the first line to load variables before modules use them
+// // // // require('dotenv').config(); // MUST be the first line to load variables before modules use them
+// // // // const express = require('express');
+// // // // const mongoose = require('mongoose');
+// // // // // const dotenv = require('dotenv'); // Removed unused import variable
+// // // // const cors = require('cors');
+// // // // const vendorRoutes = require('./routes/vendorRoutes');
+// // // // const adminRoutes = require('./routes/adminRoutes');
+// // // // const router = express.Router();
+// // // // const productRoutes = require('./routes/productRoutes');
+// // // // const salesRoutes = require('./routes/salesRoutes');
+// // // // const expiredProductRoutes = require('./routes/expiredProductRoutes');
+// // // // const reportRoutes = require('./routes/reportRoutes');
+
+// // // // const app = express();
+
+// // // // app.use(cors()); // Use cors
+// // // // app.use(express.json());
+
+// // // // // ✅ Only one CORS import + use
+// // // // app.use(cors({
+// // // //   origin: ['http://localhost:3000', 'https://bakery-shop-client.vercel.app'],
+// // // //   credentials: true
+// // // // }));
+
+// // // // //app.use(express.json());
+// // // // app.use(express.json({ limit: '10mb' }));
+// // // // app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
+// // // // // MongoDB Connection
+// // // // // We can remove the local variable definition since dotenv is now guaranteed to be loaded.
+// // // // const MONGO_URI = process.env.MONGO_URI; 
+// // // // if (!MONGO_URI) {
+// // // //   console.error('.env file is missing or MONGO_URI not defined');
+// // // //   process.exit(1);
+// // // // }
+
+// // // // mongoose.connect(process.env.MONGO_URI, {
+// // // //   useNewUrlParser: true,
+// // // //   useUnifiedTopology: true
+// // // // })
+// // // // .then(() => console.log("MongoDB connected"))
+// // // // .catch(err => console.error("MongoDB connection error:", err));
+
+// // // // // Test route
+// // // // app.get('/', (req, res) => {
+// // // //   res.send('Bakery Server is running ✅');
+// // // // });
+
+// // // // // API Routes
+// // // // app.use('/api/customers', require('./routes/customerRoutes'));
+// // // // app.use('/api/products', require('./routes/productRoutes'));
+// // // // app.use('/api/sales', require('./routes/salesRoutes'));
+// // // // app.use('/api/ledger', require('./routes/ledgerRoutes'));
+// // // // app.use('/api/reports', require('./routes/reportRoutes'));
+// // // // app.use('/api/expired-products', expiredProductRoutes);
+// // // // app.use('/api/admin', adminRoutes);
+// // // // app.use('/api/vendor', vendorRoutes);
+// // // // app.use('/api/reports', reportRoutes);
+
+// // // // // 404 Handler
+// // // // app.use((req, res) => {
+// // // //   res.status(404).json({ message: 'Route not found' });
+// // // // });
+
+// // // // // ✅ Only one app.listen
+// // // // const PORT = process.env.PORT || 10000;
+// // // // app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+// // // // app.listen(PORT, () => {
+// // // //   console.log(`🚀 Server running on http://localhost:${PORT}`);
+// // // // });
+
+// // // // --- CORRECT (for Mongoose) ---
+// // // // This updates all fields in the request body
+
+// // // require('dotenv').config(); // This MUST be the first line
 // // // const express = require('express');
 // // // const mongoose = require('mongoose');
-// // // // const dotenv = require('dotenv'); // Removed unused import variable
 // // // const cors = require('cors');
+
+// // // // --- Import all your route files ---
 // // // const vendorRoutes = require('./routes/vendorRoutes');
 // // // const adminRoutes = require('./routes/adminRoutes');
-// // // const router = express.Router();
 // // // const productRoutes = require('./routes/productRoutes');
 // // // const salesRoutes = require('./routes/salesRoutes');
 // // // const expiredProductRoutes = require('./routes/expiredProductRoutes');
 // // // const reportRoutes = require('./routes/reportRoutes');
+// // // const customerRoutes = require('./routes/customerRoutes');
+// // // const ledgerRoutes = require('./routes/ledgerRoutes');
 
 // // // const app = express();
 
-// // // app.use(cors()); // Use cors
-// // // app.use(express.json());
-
-// // // // ✅ Only one CORS import + use
+// // // // --- Middleware Setup ---
+// // // // 1. Configure CORS
 // // // app.use(cors({
 // // //   origin: ['http://localhost:3000', 'https://bakery-shop-client.vercel.app'],
 // // //   credentials: true
 // // // }));
 
-// // // //app.use(express.json());
+// // // // 2. Configure Body Parsers (This fixes the 'req.body' is empty problem)
+// // // // Increased limit for large payloads (like base64 QR code images)
 // // // app.use(express.json({ limit: '10mb' }));
 // // // app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// // // // MongoDB Connection
-// // // // We can remove the local variable definition since dotenv is now guaranteed to be loaded.
+
+// // // // --- MongoDB Connection ---
 // // // const MONGO_URI = process.env.MONGO_URI; 
 // // // if (!MONGO_URI) {
 // // //   console.error('.env file is missing or MONGO_URI not defined');
 // // //   process.exit(1);
 // // // }
 
-// // // mongoose.connect(process.env.MONGO_URI, {
+// // // mongoose.connect(MONGO_URI, { // Removed deprecated options
 // // //   useNewUrlParser: true,
 // // //   useUnifiedTopology: true
 // // // })
 // // // .then(() => console.log("MongoDB connected"))
 // // // .catch(err => console.error("MongoDB connection error:", err));
 
-// // // // Test route
+
+// // // // --- API Routes ---
+// // // // (These MUST come AFTER the middleware setup)
+// // // app.use('/api/customers', customerRoutes);
+// // // app.use('/api/products', productRoutes);
+// // // app.use('/api/sales', salesRoutes);
+// // // app.use('/api/ledger', ledgerRoutes);
+// // // app.use('/api/reports', reportRoutes);
+// // // app.use('/api/expired-products', expiredProductRoutes);
+// // // app.use('/api/admin', adminRoutes);
+// // // app.use('/api/vendor', vendorRoutes);
+
+
+// // // // --- Test Route ---
 // // // app.get('/', (req, res) => {
 // // //   res.send('Bakery Server is running ✅');
 // // // });
 
-// // // // API Routes
-// // // app.use('/api/customers', require('./routes/customerRoutes'));
-// // // app.use('/api/products', require('./routes/productRoutes'));
-// // // app.use('/api/sales', require('./routes/salesRoutes'));
-// // // app.use('/api/ledger', require('./routes/ledgerRoutes'));
-// // // app.use('/api/reports', require('./routes/reportRoutes'));
-// // // app.use('/api/expired-products', expiredProductRoutes);
-// // // app.use('/api/admin', adminRoutes);
-// // // app.use('/api/vendor', vendorRoutes);
-// // // app.use('/api/reports', reportRoutes);
 
-// // // // 404 Handler
+// // // // --- 404 Handler ---
+// // // // (This should be after all other routes)
 // // // app.use((req, res) => {
 // // //   res.status(404).json({ message: 'Route not found' });
 // // // });
 
-// // // // ✅ Only one app.listen
+
+// // // // --- Start Server ---
 // // // const PORT = process.env.PORT || 10000;
 // // // app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-// // // app.listen(PORT, () => {
-// // //   console.log(`🚀 Server running on http://localhost:${PORT}`);
-// // // });
 
-// // // --- CORRECT (for Mongoose) ---
-// // // This updates all fields in the request body
+// // // router.put('/api/products/:id', async (req, res) => {
+// // //   try {
+// // //     const updatedProduct = await Product.findByIdAndUpdate(
+// // //       req.params.id,
+// // //       req.body, // <-- This passes the *entire* payload (quantity, price, dates)
+// // //       { 
+// // //         new: true, // This returns the new, updated document
+// // //         runValidators: true 
+// // //       }
+// // //     );
+
+// // //     if (!updatedProduct) {
+// // //       return res.status(404).json({ message: 'Product not found' });
+// // //     }
+    
+// // //     // This now returns the fully updated product to your React app
+// // //     res.json(updatedProduct); 
+
+// // //   } catch (err) {
+// // //     res.status(500).json({ message: err.message });
+// // //   }
+// // // });
 
 // // require('dotenv').config(); // This MUST be the first line
 // // const express = require('express');
@@ -156,11 +253,11 @@
 // //   credentials: true
 // // }));
 
+
 // // // 2. Configure Body Parsers (This fixes the 'req.body' is empty problem)
 // // // Increased limit for large payloads (like base64 QR code images)
 // // app.use(express.json({ limit: '10mb' }));
 // // app.use(express.urlencoded({ limit: '10mb', extended: true }));
-
 
 // // // --- MongoDB Connection ---
 // // const MONGO_URI = process.env.MONGO_URI; 
@@ -169,10 +266,8 @@
 // //   process.exit(1);
 // // }
 
-// // mongoose.connect(MONGO_URI, { // Removed deprecated options
-// //   useNewUrlParser: true,
-// //   useUnifiedTopology: true
-// // })
+// // // REMOVED 'useNewUrlParser' and 'useUnifiedTopology'
+// // mongoose.connect(MONGO_URI) 
 // // .then(() => console.log("MongoDB connected"))
 // // .catch(err => console.error("MongoDB connection error:", err));
 
@@ -204,39 +299,18 @@
 
 // // // --- Start Server ---
 // // const PORT = process.env.PORT || 10000;
-// // app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+// //app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
-// // router.put('/api/products/:id', async (req, res) => {
-// //   try {
-// //     const updatedProduct = await Product.findByIdAndUpdate(
-// //       req.params.id,
-// //       req.body, // <-- This passes the *entire* payload (quantity, price, dates)
-// //       { 
-// //         new: true, // This returns the new, updated document
-// //         runValidators: true 
-// //       }
-// //     );
+// // --- PROBLEM CODE REMOVED ---
+// // The router.put(...) block that was here has been deleted.
 
-// //     if (!updatedProduct) {
-// //       return res.status(404).json({ message: 'Product not found' });
-// //     }
-    
-// //     // This now returns the fully updated product to your React app
-// //     res.json(updatedProduct); 
-
-// //   } catch (err) {
-// //     res.status(500).json({ message: err.message });
-// //   }
-// // });
-
-// require('dotenv').config(); // This MUST be the first line
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const cors = require('cors');
-
-// // --- Import all your route files ---
-// const vendorRoutes = require('./routes/vendorRoutes');
-// const adminRoutes = require('./routes/adminRoutes');
+// const express = require("express");
+// const mongoose = require("mongoose");
+// const cors = require("cors");
+// const dotenv = require("dotenv");
+// const cookieParser = require("cookie-parser");
+// const adminRoutes = require("./routes/adminRoutes");
+// const vendorRoutes = require("./routes/vendorRoutes");
 // const productRoutes = require('./routes/productRoutes');
 // const salesRoutes = require('./routes/salesRoutes');
 // const expiredProductRoutes = require('./routes/expiredProductRoutes');
@@ -244,131 +318,147 @@
 // const customerRoutes = require('./routes/customerRoutes');
 // const ledgerRoutes = require('./routes/ledgerRoutes');
 
+// dotenv.config();
 // const app = express();
 
-// // --- Middleware Setup ---
-// // 1. Configure CORS
-// app.use(cors({
-//   origin: ['http://localhost:3000', 'https://bakery-shop-client.vercel.app'],
-//   credentials: true
-// }));
+// // ✅ Allow multiple frontend origins (Vercel + Localhost)
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:3000",                     // local frontend
+//       "https://bakers-edge.vercel.app",            // live Vercel frontend
+//       "https://bakers-edge-git-main-srushtishaha.vercel.app" // preview build
+//     ],
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
 
+// app.use(express.json());
+// app.use(cookieParser());
 
-// // 2. Configure Body Parsers (This fixes the 'req.body' is empty problem)
-// // Increased limit for large payloads (like base64 QR code images)
-// app.use(express.json({ limit: '10mb' }));
-// app.use(express.urlencoded({ limit: '10mb', extended: true }));
+// // ✅ Database Connection
+// mongoose
+//   .connect(process.env.MONGO_URI, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   })
+//   .then(() => console.log("✅ MongoDB connected successfully"))
+//   .catch((err) => console.log("❌ MongoDB connection error:", err));
 
-// // --- MongoDB Connection ---
-// const MONGO_URI = process.env.MONGO_URI; 
-// if (!MONGO_URI) {
-//   console.error('.env file is missing or MONGO_URI not defined');
-//   process.exit(1);
-// }
+// // ✅ Test route to confirm server is working
+// app.get("/", (req, res) => {
+//   res.send("Bakers Edge backend is running successfully 🚀");
+// });
 
-// // REMOVED 'useNewUrlParser' and 'useUnifiedTopology'
-// mongoose.connect(MONGO_URI) 
-// .then(() => console.log("MongoDB connected"))
-// .catch(err => console.error("MongoDB connection error:", err));
+// // ✅ Debug route to check frontend origin (optional)
+// app.get("/check-origin", (req, res) => {
+//   res.json({ origin: req.headers.origin });
+// });
 
-
-// // --- API Routes ---
-// // (These MUST come AFTER the middleware setup)
+// // ✅ Routes
+// app.use("/api/admin", adminRoutes);
+// app.use("/api/vendor", vendorRoutes);
 // app.use('/api/customers', customerRoutes);
 // app.use('/api/products', productRoutes);
 // app.use('/api/sales', salesRoutes);
 // app.use('/api/ledger', ledgerRoutes);
 // app.use('/api/reports', reportRoutes);
 // app.use('/api/expired-products', expiredProductRoutes);
-// app.use('/api/admin', adminRoutes);
-// app.use('/api/vendor', vendorRoutes);
 
 
-// // --- Test Route ---
-// app.get('/', (req, res) => {
-//   res.send('Bakery Server is running ✅');
-// });
 
 
-// // --- 404 Handler ---
-// // (This should be after all other routes)
-// app.use((req, res) => {
-//   res.status(404).json({ message: 'Route not found' });
-// });
+// // ✅ Start Server
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
 
-// // --- Start Server ---
-// const PORT = process.env.PORT || 10000;
-//app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-
-// --- PROBLEM CODE REMOVED ---
-// The router.put(...) block that was here has been deleted.
-
+// ✅ Import dependencies
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
-const adminRoutes = require("./routes/adminRoutes");
-const vendorRoutes = require("./routes/vendorRoutes");
-const productRoutes = require('./routes/productRoutes');
-const salesRoutes = require('./routes/salesRoutes');
-const expiredProductRoutes = require('./routes/expiredProductRoutes');
-const reportRoutes = require('./routes/reportRoutes');
-const customerRoutes = require('./routes/customerRoutes');
-const ledgerRoutes = require('./routes/ledgerRoutes');
 
+// ✅ Load environment variables
 dotenv.config();
+
+// ✅ Create Express app
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// ✅ Allow multiple frontend origins (Vercel + Localhost)
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",                     // local frontend
-      "https://bakers-edge.vercel.app",            // live Vercel frontend
-      "https://bakers-edge-git-main-srushtishaha.vercel.app" // preview build
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-
+// ✅ Middlewares
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Database Connection
+// ✅ Secure and flexible CORS setup (Render + Vercel + Local)
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://bakers-edge.vercel.app",
+  "https://bakers-edge-git-main-srushtishaha.vercel.app",
+];
+
+// 🛡️ Custom CORS middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,DELETE,OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type,Authorization"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  // ✅ Respond to preflight (OPTIONS) requests
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// ✅ MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => console.log("✅ MongoDB connected successfully"))
-  .catch((err) => console.log("❌ MongoDB connection error:", err));
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// ✅ Test route to confirm server is working
+// ✅ Import route files
+const adminRoutes = require("./routes/adminRoutes");
+const vendorRoutes = require("./routes/vendorRoutes");
+const productRoutes = require("./routes/productRoutes");
+const salesRoutes = require("./routes/salesRoutes");
+const expiredProductRoutes = require("./routes/expiredProductRoutes");
+const reportRoutes = require("./routes/reportRoutes");
+const customerRoutes = require("./routes/customerRoutes");
+const ledgerRoutes = require("./routes/ledgerRoutes");
+
+// ✅ Register API routes
+app.use("/api/admin", adminRoutes);
+app.use("/api/vendor", vendorRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/sales", salesRoutes);
+app.use("/api/customers", customerRoutes);
+app.use("/api/ledger", ledgerRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/expired-products", expiredProductRoutes);
+
+// ✅ Basic test routes
 app.get("/", (req, res) => {
-  res.send("Bakers Edge backend is running successfully 🚀");
+  res.send("🧁 Bakers Edge backend is running successfully 🚀");
 });
 
-// ✅ Debug route to check frontend origin (optional)
 app.get("/check-origin", (req, res) => {
   res.json({ origin: req.headers.origin });
 });
 
-// ✅ Routes
-app.use("/api/admin", adminRoutes);
-app.use("/api/vendor", vendorRoutes);
-app.use('/api/customers', customerRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/sales', salesRoutes);
-app.use('/api/ledger', ledgerRoutes);
-app.use('/api/reports', reportRoutes);
-app.use('/api/expired-products', expiredProductRoutes);
-
-
-
-
-// ✅ Start Server
-const PORT = process.env.PORT || 5000;
+// ✅ Start the server (always at the bottom)
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
