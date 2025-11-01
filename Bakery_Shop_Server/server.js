@@ -299,7 +299,7 @@
 
 // // --- Start Server ---
 // const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+//app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
 // --- PROBLEM CODE REMOVED ---
 // The router.put(...) block that was here has been deleted.
