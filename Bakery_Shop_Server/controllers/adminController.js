@@ -1171,9 +1171,6 @@ exports.updateMyPassword = async (req, res) => {
   }
 };
 
-const Vendor = require('../models/Vendor');
-const ExcelJS = require('exceljs');
-const PDFDocument = require('pdfkit');
 
 exports.exportVendorsToExcel = async (req, res) => {
   try {
