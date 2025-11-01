@@ -627,7 +627,7 @@ function Support() {
           <div className="flex items-center gap-6 md:gap-8 mt-4">
             {/* WhatsApp */}
             <a
-              href="https://wa.me/911234567890" // <-- ADD YOUR NUMBER (with country code)
+              href="https://wa.me/918446348461" // <-- ADD YOUR NUMBER (with country code)
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-700 hover:text-green-500 transform hover:scale-110 transition-all duration-300"
@@ -636,20 +636,11 @@ function Support() {
               <FaWhatsapp className="text-4xl md:text-5xl" />
             </a>
 
-            {/* Instagram */}
-            <a
-              href="https://www.instagram.com/your_username" // <-- ADD YOUR USERNAME
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-700 hover:text-pink-600 transform hover:scale-110 transition-all duration-300"
-              aria-label="Follow on Instagram"
-            >
-              <FaInstagram className="text-4xl md:text-5xl" />
-            </a>
+        
 
             {/* SMS (Text Message) */}
             <a
-              href="sms:+911234567890" // <-- ADD YOUR NUMBER (with country code)
+              href="sms:+918446348461" // <-- ADD YOUR NUMBER (with country code)
               className="text-gray-700 hover:text-blue-500 transform hover:scale-110 transition-all duration-300"
               aria-label="Send a text message (SMS)"
             >
@@ -658,7 +649,7 @@ function Support() {
 
             {/* Phone Call */}
             <a
-              href="tel:+911234567890" // <-- ADD YOUR NUMBER (with country code)
+              href="tel:+918446348461" // <-- ADD YOUR NUMBER (with country code)
               className="text-gray-700 hover:text-pink-800 transform hover:scale-110 transition-all duration-300"
               aria-label="Call us"
             >
