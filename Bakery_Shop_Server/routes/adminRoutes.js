@@ -53,6 +53,7 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 const adminAuth = require("../middleware/adminAuth");
 const vendorAuth = require("../middleware/vendorAuth");
+const { exportVendorsToExcel, exportVendorsToPDF } = require('../controllers/adminController');
 
 // Admin Login
 router.post("/login", adminController.adminLogin);
@@ -80,6 +81,10 @@ router.get("/vendor/me", vendorAuth, adminController.getVendorMe);
 router.patch("/vendor/me",vendorAuth, adminController.updateVendorMe);
 
 router.put("/vendor/password", vendorAuth, adminController.updateMyPassword);
+
+router.get('/vendors/export/excel', exportVendorsToExcel);
+router.get('/vendors/export/pdf', exportVendorsToPDF);
+
 
 
 module.exports = router;
