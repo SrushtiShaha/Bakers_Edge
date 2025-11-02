@@ -68,9 +68,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const sendEmail = async (to, subject, text) => {
   try {
     await resend.emails.send({
-      from: 'Bakery Shop <onboarding@resend.dev>',
+      from: "Baker's Edge <onboarding@resend.dev>",
       to,
-      subject,
+      subject: "Your vendor application successfully approved",
       text,
     });
     console.log(`✅ Email sent successfully to ${to}`);

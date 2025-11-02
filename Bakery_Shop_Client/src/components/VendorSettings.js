@@ -1148,67 +1148,7 @@ const VendorSettings = () => {
       </Card>
 
       {/* Password Change Card */}
-      <Card
-        className="shadow-lg mx-auto p-4 mt-4"
-        style={{
-          maxWidth: "600px",
-          borderRadius: "15px",
-          background: "#ffffff",
-        }}
-      >
-        <h4 className="text-center mb-4" style={{ color: "#004085" }}>
-          🔑 Change Password
-        </h4>
-
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>Current Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="currentPassword"
-              value={passwordData.currentPassword}
-              onChange={handlePasswordChange}
-              placeholder="Enter your current password"
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>New Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="newPassword"
-              value={passwordData.newPassword}
-              onChange={handlePasswordChange}
-              placeholder="Enter new password (min. 8 characters)"
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Confirm New Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="confirmPassword"
-              value={passwordData.confirmPassword}
-              onChange={handlePasswordChange}
-              placeholder="Confirm your new password"
-            />
-          </Form.Group>
-
-          <div className="text-center mt-4">
-            <Button
-              variant="primary"
-              onClick={handlePasswordSave}
-              style={{
-                padding: "10px 20px",
-                borderRadius: "10px",
-                fontWeight: "bold",
-              }}
-            >
-              🔒 Update Password
-            </Button>
-          </div>
-        </Form>
-      </Card>
+      
     </Container>
   );
 };
