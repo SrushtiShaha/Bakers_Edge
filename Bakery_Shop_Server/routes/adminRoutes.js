@@ -81,5 +81,7 @@ router.patch("/vendor/me",vendorAuth, adminController.updateVendorMe);
 
 router.put("/vendor/password", vendorAuth, adminController.updateMyPassword);
 
+router.get('/vendors/export/excel', adminAuth, adminController.exportVendorsToExcel);
+router.get('/vendors/export/pdf', adminAuth, adminController.exportVendorsToPdf);
 
 module.exports = router;

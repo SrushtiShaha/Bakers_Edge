@@ -602,9 +602,9 @@ const Product = require('../models/Product');
 const ExpiredProduct = require('../models/ExpiredProduct'); 
 
 // GET /
+
 exports.getProducts = async (req, res) => {
   try {
-    // ✅ FINDS ONLY products for the logged-in vendor
     const products = await Product.find({ vendorId: req.vendorId }).sort({ name: 1 });
     res.json(products);
   } catch (err) {
@@ -612,49 +612,37 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// POST /
 exports.addProduct = async (req, res) => {
   try {
     const { name, quantity, price, weight, expiryDate, manufacturingDate } = req.body;
-
-    // ✅ FINDS ONLY products for the logged-in vendor
-    let product = await Product.findOne({ 
-      name: new RegExp(`^${name}$`, 'i'),
-      price: price,
-      weight: weight || '',
-      vendorId: req.vendorId // Check against vendor
-    });
+    let product = await Product.findOne({ name: new RegExp(`^${name}$`, 'i'), vendorId: req.vendorId });
 
     if (product) {
-      // Product matches - add batch
-      if (!product.expiryBatches) product.expiryBatches = [];
-      const existingBatch = product.expiryBatches.find(
-        (b) => new Date(b.expiryDate).toDateString() === new Date(expiryDate).toDateString()
+      const existing = product.expiryBatches.find(b =>
+        new Date(b.expiryDate).toDateString() === new Date(expiryDate).toDateString()
       );
+      if (existing) existing.quantity += Number(quantity);
+      else product.expiryBatches.push({ expiryDate, quantity });
 
-      if (existingBatch) {
-        existingBatch.quantity += Number(quantity);
-      } else {
-        product.expiryBatches.push({ expiryDate, quantity });
-      }
+      product.price = price;
+      product.weight = weight;
       product.manufacturingDate = manufacturingDate;
       const updated = await product.save();
-      res.json(updated);
-    } else {
-      // No match - create new product
-      const newProduct = new Product({
-        ...req.body,
-        vendorId: req.vendorId, // ✅ TAGS new product with vendorId
-        expiryBatches: [{ expiryDate, quantity }]
-      });
-      const saved = await newProduct.save();
-      res.status(201).json(saved);
+      return res.json(updated);
     }
+
+    const newProduct = new Product({
+      vendorId: req.vendorId,
+      name, price, weight, manufacturingDate,
+      expiryBatches: [{ expiryDate, quantity }]
+    });
+    const saved = await newProduct.save();
+    res.status(201).json(saved);
   } catch (err) {
-    console.error('Add Product Error:', err.message);
-    res.status(400).json({ message: err.message, errors: err.errors });
+    res.status(400).json({ message: err.message });
   }
 };
+
 
 // PUT /:id
 exports.updateProduct = async (req, res) => {

@@ -828,6 +828,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const sendSms = require("../utils/sendSms");
 const sendEmail = require("../utils/sendEmail");
+const excel = require('exceljs');
+const PDFDocument = require('pdfkit');
 
 // ... (all other functions remain the same) ...
 
@@ -1166,5 +1168,87 @@ exports.updateMyPassword = async (req, res) => {
   } catch (err) {
     console.error("❌ Error updating vendor password:", err);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+/**
+ * [NEW] Export Vendors to Excel
+ */
+exports.exportVendorsToExcel = async (req, res) => {
+  try {
+    const vendors = await Vendor.find({ isApproved: true });
+
+    const workbook = new excel.Workbook();
+    const worksheet = workbook.addWorksheet("Approved Vendors");
+
+    worksheet.columns = [
+      { header: "Name", key: "name", width: 30 },
+      { header: "Shop Name", key: "shopName", width: 30 },
+      { header: "Email", key: "email", width: 30 },
+      { header: "Phone", key: "phone", width: 15 },
+      { header: "Aadhar No", key: "adharNo", width: 20 },
+      { header: "Shop Address", key: "shopAddress", width: 50 },
+    ];
+
+    vendors.forEach((vendor) => {
+      worksheet.addRow(vendor);
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=" + "approved_vendors.xlsx"
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error("Error exporting to Excel:", err);
+    res.status(500).json({ message: "Error exporting to Excel" });
+  }
+};
+
+/**
+ * [NEW] Export Vendors to PDF
+ */
+exports.exportVendorsToPdf = async (req, res) => {
+  try {
+    const vendors = await Vendor.find({ isApproved: true });
+
+    const doc = new PDFDocument({ margin: 30, size: 'A4' });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=" + "approved_vendors.pdf"
+    );
+
+    doc.pipe(res);
+
+    // Title
+    doc.fontSize(18).font("Helvetica-Bold").text("Approved Vendors List", { align: "center" });
+    doc.moveDown();
+
+    // Loop through vendors
+    vendors.forEach((vendor) => {
+      doc.fontSize(12).font("Helvetica-Bold").text(`Shop: ${vendor.shopName}`);
+      doc.fontSize(10).font("Helvetica")
+         .text(`Name: ${vendor.name}`)
+         .text(`Email: ${vendor.email}`)
+         .text(`Phone: ${vendor.phone}`)
+         .text(`Aadhar: ${vendor.adharNo}`)
+         .text(`Address: ${vendor.shopAddress}`);
+      doc.moveDown();
+      doc.lineCap('butt').moveTo(30, doc.y).lineTo(565, doc.y).stroke();
+      doc.moveDown();
+    });
+
+    doc.end();
+  } catch (err) {
+    console.error("Error exporting to PDF:", err);
+    res.status(500).json({ message: "Error exporting to PDF" });
   }
 };

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -32,10 +34,17 @@ const AdminDashboard = () => {
   // --- Toggle Sidebar ---
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  // --- Logout ---
+  // --- Logout with confirmation and toast ---
   const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    navigate("/");
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      localStorage.removeItem("adminToken");
+      toast.success("Logged out successfully!", {
+        position: "top-center",
+        autoClose: 2000,
+      });
+      setTimeout(() => navigate("/"), 2000);
+    }
   };
 
   // --- Fetch counts for dashboard ---
@@ -63,6 +72,9 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-layout">
+      {/* Toast Container */}
+      <ToastContainer />
+
       {/* Sidebar */}
       <motion.div
         className={`sidebar ${isMobile ? "mobile-sidebar" : ""}`}

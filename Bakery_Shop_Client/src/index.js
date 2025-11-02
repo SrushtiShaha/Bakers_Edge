@@ -307,6 +307,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css"; 
 import App from "./App";
+import axios from "axios";
 import Navbar from "./components/Navbar";
 import AdminDashboard from "./components/AdminDashboard";
 import VendorDashboard from "./components/Dashboard";
@@ -327,6 +328,16 @@ import AddVendor from "./components/AddVendor";
 
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
+
+// ✅ Global Axios Setup
+const vendorToken = localStorage.getItem("vendorToken");
+const adminToken = localStorage.getItem("adminToken");
+if (vendorToken) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${vendorToken}`;
+} else if (adminToken) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${adminToken}`;
+}
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || "http://localhost:10000"
 
 // Protected Route for Admin
 const AdminProtected = ({ children }) => {

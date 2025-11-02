@@ -633,23 +633,37 @@ const Ledger = () => {
   }, [API, navigate]);
 
   const groupByCustomer = (data) => {
-    // ... (your grouping logic is fine)
-    const grouped = data.reduce((acc, entry) => {
-      const custId = entry.customer?._id;
-      if (!custId) return acc;
-      if (!acc[custId]) {
-        acc[custId] = { ...entry, total: parseFloat(entry.total), products: [...(entry.products || [])] };
-      } else {
-        acc[custId].total += parseFloat(entry.total);
-        acc[custId].products = Array.from(new Set([...acc[custId].products, ...entry.products]));
-        if (new Date(entry.createdAt) > new Date(acc[custId].createdAt)) {
-          acc[custId].createdAt = entry.createdAt;
-        }
+  const grouped = data.reduce((acc, entry) => {
+    const custId = entry.customer?._id;
+    if (!custId) return acc;
+
+    // Convert product IDs to product names
+    const productList = (entry.products || []).map(p => {
+      if (typeof p === "object" && p.name) return p.name;
+      const prod = products.find(pr => pr._id === p);
+      return prod ? prod.name : "Unknown";
+    });
+
+    if (!acc[custId]) {
+      acc[custId] = {
+        ...entry,
+        total: parseFloat(entry.total),
+        products: productList,
+        createdAt: entry.createdAt,
+      };
+    } else {
+      acc[custId].total += parseFloat(entry.total);
+      acc[custId].products = Array.from(new Set([...acc[custId].products, ...productList]));
+      if (new Date(entry.createdAt) > new Date(acc[custId].createdAt)) {
+        acc[custId].createdAt = entry.createdAt;
       }
-      return acc;
-    }, {});
-    return Object.values(grouped);
-  };
+    }
+
+    return acc;
+  }, {});
+  return Object.values(grouped);
+};
+
 
   const fetchLedger = useCallback(async () => {
     const config = getAuthConfig();
@@ -774,17 +788,35 @@ const Ledger = () => {
   };
 
   const handleGeneratePDF = (ledgerId) => {
-    // ... (PDF logic is fine)
     const entry = filteredData.find(e => e._id === ledgerId);
-    if (!entry) return toast.error("Entry not found");
+    if (!entry) return toast.error('Entry not found');
+
     const pdfContent = document.createElement('div');
-    pdfContent.innerHTML = `... (your HTML string) ...`; // Your HTML is fine
-    html2pdf().from(pdfContent).set({
-      margin: 0.3, filename: `ledger_${ledgerId}.pdf`,
+    pdfContent.innerHTML = `
+      <div style="padding: 20px; font-family: Arial; border: 2px solid #000; width: 100%;">
+        <h2 style="text-align: center; color: #2c3e50;">Customer Ledger</h2>
+        <hr />
+        <p><strong>Customer Name:</strong> ${entry.customer?.name || 'N/A'}</p>
+        <p><strong>Contact:</strong> ${entry.customer?.contact || 'N/A'}</p>
+        <p><strong>Address:</strong> ${entry.customer?.address || 'N/A'}</p>
+        <p><strong>Date:</strong> ${new Date(entry.createdAt).toLocaleString()}</p>
+        <p><strong>Products:</strong> ${entry.products?.join(', ') || 'None'}</p>
+        <p><strong>Total Pending:</strong> ₹${entry.total?.toFixed(2) || '0.00'}</p>
+        <div style="margin-top: 30px; text-align: right;">
+          <p>Authorized Signature __________________</p>
+        </div>
+      </div>
+    `;
+
+    const opt = {
+      margin: 0.3,
+      filename: `ledger_${ledgerId}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    }).save();
+    };
+
+    html2pdf().from(pdfContent).set(opt).save();
   };
 
   return (
@@ -847,7 +879,7 @@ const Ledger = () => {
             <div className="card-body">
               <p><strong>Address:</strong> {entry.customer?.address || 'N/A'}</p>
               <p><strong>Date:</strong> {new Date(entry.createdAt).toLocaleString()}</p>
-              <p><strong>Products Purchased:</strong> {entry.products?.map(p => p.name || p).join(', ') || 'None'}</p>
+              <p><strong>Products Purchased:</strong> {entry.products?.join(', ') || 'None'}</p>
               <p><strong>Total Pending Amount:</strong> ₹{entry.total?.toFixed(2) || '0.00'}</p>
             </div>
           </div>
