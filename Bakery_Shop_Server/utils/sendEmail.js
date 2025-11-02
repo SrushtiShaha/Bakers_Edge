@@ -29,35 +29,54 @@
 
 // module.exports = sendEmail;
 
-// server/utils/sendEmail.js
-const nodemailer = require('nodemailer');
+// // server/utils/sendEmail.js
+// const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
-    // ✅ FIX: Use explicit host/port for secure connection (Port 465 is secure SSL)
-    host: 'smtp.gmail.com', 
-    port: 465, 
-    secure: true, // MUST be true for port 465
-    auth: {
-        // ✅ Uses the email address from .env
-        user: process.env.EMAIL_USER,
-        // ✅ Uses the App Password (qjfqfddpxioeihno) from .env
-        pass: process.env.EMAIL_PASS,
-    },
-});
+// const transporter = nodemailer.createTransport({
+//     // ✅ FIX: Use explicit host/port for secure connection (Port 465 is secure SSL)
+//     host: 'smtp.gmail.com', 
+//     port: 465, 
+//     secure: true, // MUST be true for port 465
+//     auth: {
+//         // ✅ Uses the email address from .env
+//         user: process.env.EMAIL_USER,
+//         // ✅ Uses the App Password (qjfqfddpxioeihno) from .env
+//         pass: process.env.EMAIL_PASS,
+//     },
+// });
+
+// const sendEmail = async (to, subject, text) => {
+//     try {
+//         await transporter.sendMail({
+//             from: process.env.EMAIL_USER,
+//             to: to,
+//             subject: subject,
+//             text: text,
+//         });
+//         console.log("Email sent successfully to", to);
+//     } catch (error) {
+//         // Logging the full error is crucial for final debugging
+//         console.error("Error sending email:", error);
+//     }
+// };
+
+// module.exports = sendEmail;
+
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async (to, subject, text) => {
-    try {
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: to,
-            subject: subject,
-            text: text,
-        });
-        console.log("Email sent successfully to", to);
-    } catch (error) {
-        // Logging the full error is crucial for final debugging
-        console.error("Error sending email:", error);
-    }
+  try {
+    await resend.emails.send({
+      from: 'Bakery Shop <onboarding@resend.dev>',
+      to,
+      subject,
+      text,
+    });
+    console.log(`✅ Email sent successfully to ${to}`);
+  } catch (error) {
+    console.error('❌ Error sending email:', error);
+  }
 };
 
 module.exports = sendEmail;

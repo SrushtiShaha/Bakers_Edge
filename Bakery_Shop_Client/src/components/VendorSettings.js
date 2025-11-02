@@ -970,10 +970,10 @@ const VendorSettings = () => {
   };
 
   // ✅ Handle password input
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setPasswordData((prev) => ({ ...prev, [name]: value }));
-  };
+  // const handlePasswordChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setPasswordData((prev) => ({ ...prev, [name]: value }));
+  // };
 
   // ✅ Handle QR upload
   const handleQrUpload = (e) => {
@@ -1003,52 +1003,52 @@ const VendorSettings = () => {
   };
 
   // ✅ Change password (fixed endpoint)
-  const handlePasswordSave = async () => {
-    const { currentPassword, newPassword, confirmPassword } = passwordData;
+  // const handlePasswordSave = async () => {
+  //   const { currentPassword, newPassword, confirmPassword } = passwordData;
 
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      toast.error("Please fill in all password fields");
-      return;
-    }
+  //   if (!currentPassword || !newPassword || !confirmPassword) {
+  //     toast.error("Please fill in all password fields");
+  //     return;
+  //   }
 
-    if (newPassword !== confirmPassword) {
-      toast.error("New passwords do not match");
-      return;
-    }
+  //   if (newPassword !== confirmPassword) {
+  //     toast.error("New passwords do not match");
+  //     return;
+  //   }
 
-    if (newPassword.trim().length < 8) {
-      toast.error("New password must be at least 8 characters");
-      return;
-    }
+  //   if (newPassword.trim().length < 8) {
+  //     toast.error("New password must be at least 8 characters");
+  //     return;
+  //   }
 
-    try {
-      const token = localStorage.getItem("vendorToken");
+  //   try {
+  //     const token = localStorage.getItem("vendorToken");
 
-      console.log("Sending password data:", { currentPassword, newPassword });
+  //     console.log("Sending password data:", { currentPassword, newPassword });
 
-      // ✅ FIXED ENDPOINT
-      const response = await axios.put(
-        `${apiUrl}/api/admin/vendor/password`,
-        { currentPassword, newPassword },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  //     // ✅ FIXED ENDPOINT
+  //     const response = await axios.put(
+  //       `${apiUrl}/api/admin/vendor/password`,
+  //       { currentPassword, newPassword },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
 
-      toast.success(response.data.message || "Password updated successfully!");
-      setPasswordData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-    } catch (err) {
-      console.error("❌ Password Update Error:", err);
-      const message = err.response?.data?.message || "Error updating password";
-      toast.error(message);
-    }
-  };
+  //     toast.success(response.data.message || "Password updated successfully!");
+  //     setPasswordData({
+  //       currentPassword: "",
+  //       newPassword: "",
+  //       confirmPassword: "",
+  //     });
+  //   } catch (err) {
+  //     console.error("❌ Password Update Error:", err);
+  //     const message = err.response?.data?.message || "Error updating password";
+  //     toast.error(message);
+  //   }
+  // };
 
   // ✅ Loading spinner
   if (loading) {
